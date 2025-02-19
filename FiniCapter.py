@@ -1,25 +1,27 @@
+# Code Made by Mathis.M
+# For a Prototype for Stacks
+
 import utime
 from dht11 import *
 from machine import Pin, I2C
 import time
 from phew import server, connect_to_wifi
-import json
+import json # Import all library required for this code to work
 
-dht11 = DHT(16) #temperature and humidity sensor connect to D18 port
-adcpin = 4
-sensor = machine.ADC(adcpin)
-ip = connect_to_wifi("Wifi-Test-Mathis","I_Love_Blondie")
+dht11 = DHT(16) #temperature and humidity sensor connect to the 16th GPIO (Note that you need to change it to you're own GPIO)
 
-print(ip)
+ip = connect_to_wifi("YouWifiSSID","YouWifiPassword") # Connecting you to your chosen wifi
+
+print(ip) #Print you raspberry PICO ip into the consol for you to acces the web page
     
 @server.route("/", methods=["GET"])
 def home(request):
-    t,h = dht11.readTempHumid() # temp:  humid:
+    t,h = dht11.readTempHumid() # temp:  humid: capter getting the information
     x = {
         "Temperature ": t,
         "Humiditer ": h,
-        }
-    y = json.dumps(x)
+        } 			#Making the base for the json.
+    y = json.dumps(x) 		# dumping it all into the json into a varuable
     html= f""" <!doctype html>
 	<html lang="en">
 	    <body>
@@ -29,19 +31,12 @@ def home(request):
 	    </body>
 	</html>
 	"""
-    return str(html)
+    return str(html) # Making the HTML for the web page to display the data collecte by the captor
 
 @server.catchall()
 def catchall(request):
     return "Page not found", 404
 
 while True:
-
-    server.run()
-
-    
-   
-    
-    print(y)
-
-    
+	print(y) #Also printing the data into the consol
+    	server.run() #Running the server
